@@ -42,7 +42,7 @@ automatically if Discord is reopened.
 cargo run --release
 ```
 
-> Or use `yay -S dynamic-drpc-hyprland-bin` / `yay -S dynamic-drpc-hyprland-git`
+> Or use `yay -S ddsh-bin` / `yay -S ddsh-git`
 
 ### 2. Configure `config.json` (in the `~/.local/share/dynamic-drpc-hyprland`)
 

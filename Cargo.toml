@@ -1,9 +1,9 @@
 [package]
 name = "discord-dynamic-status-hyprland"
-authors = ["kazuha046"]
+authors = ["kazuha046", "Dae Euhwa"]
 description = "Dynamic Discord Rich Presence based on active Hyprland windows"
-repository = "https://github.com/mrkirill046/discord-dynamic-status-hyprland"
-homepage = "https://github.com/mrkirill046/discord-dynamic-status-hyprland"
+repository = "https://github.com/Veridian-Zenith/discord-dynamic-status-hyprland"
+homepage = "https://github.com/Veridian-Zenith/discord-dynamic-status-hyprland"
 license-file = "LICENSE"
 keywords = ["discord", "rpc", "hyprland", "wayland", "dynamic"]
 categories = ["command-line-utilities", "games", "network-programming"]

@@ -1,5 +1,5 @@
 pre-release-replacements = [
-  {file = "Cargo.toml", search = 'version = ".*"', replace = 'version = "{{version}}"'},
+  {file = "Cargo.toml", search = '^version = ".*"', replace = 'version = "{{version}}"'},
 ]
 tag = true
 tag-prefix = "v"
