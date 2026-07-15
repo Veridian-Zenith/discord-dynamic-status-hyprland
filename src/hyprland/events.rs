@@ -19,7 +19,8 @@ where
 
     let reader = BufReader::new(stream);
 
-    for line in reader.lines().map_while(Result::ok) {
+    #[allow(clippy::lines_filter_map_ok)]
+    for line in reader.lines().filter_map(Result::ok) {
         if let Some(data) = line.strip_prefix("activewindow>>") {
             let mut parts = data.splitn(2, ',');
 

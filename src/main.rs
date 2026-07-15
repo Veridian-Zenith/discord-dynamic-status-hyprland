@@ -13,7 +13,7 @@ fn main() {
     Logger::log(&format!(
         "Starting application v{} ({} / {})",
         constants::VERSION,
-        constants::OS,
+        constants::detect_os(),
         std::env::consts::ARCH
     ));
 
