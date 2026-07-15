@@ -1,0 +1,13 @@
+[Unit]
+Description=Discord Dynamic Status for Hyprland
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/discord-monitor.sh
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical-session.target

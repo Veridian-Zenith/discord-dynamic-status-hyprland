@@ -13,6 +13,7 @@ Automatically updates your Discord status based on the active window.
 ## ✨ Features
 
 * **Dynamic status** — builds your Discord Rich Presence live from the active window (class → name, title → details). No need to list every app.
+* **Browser support** — automatically cleans browser tab titles (strips `- Mozilla Firefox` style suffixes, extracts domains from bare URLs, replaces "New Tab" with the app name).
 * Any application works out of the box; only minimal optional config
 * Lightweight and fast (Rust + Hyprland events)
 * Works on Hyprland (Wayland)
@@ -21,13 +22,27 @@ Automatically updates your Discord status based on the active window.
 
 ## 🏗 Installation and Run
 
-### 1. Clone repository
-> Or use `yay -S dynamic-drpc-hyprland-bin` or `yay -S dynamic-drpc-hyprland-git`
+### Quick install (recommended)
+
 ```bash
-git clone https://github.com/mrkirill046/discord-dynamic-status-hyprland.git
+git clone https://github.com/Veridian-Zenith/discord-dynamic-status-hyprland.git
 cd discord-dynamic-status-hyprland
+./scripts/install.sh --release
+systemctl --user daemon-reload
+systemctl --user enable --now discord-monitor.service
+```
+
+This installs the binary and a systemd user service that auto-launches the status
+app whenever Discord is running, and stops it when Discord closes. It restarts
+automatically if Discord is reopened.
+
+### Manual run (no service)
+
+```bash
 cargo run --release
 ```
+
+> Or use `yay -S dynamic-drpc-hyprland-bin` / `yay -S dynamic-drpc-hyprland-git`
 
 ### 2. Configure `config.json` (in the `~/.local/share/dynamic-drpc-hyprland`)
 
