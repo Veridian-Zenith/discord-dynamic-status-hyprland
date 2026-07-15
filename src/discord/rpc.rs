@@ -24,9 +24,7 @@ impl DiscordRpc {
             act = act.state(state);
         }
 
-        if rule.details_from_title.unwrap_or(false) {
-            act = act.details(title);
-        } else if let Some(details) = &rule.details {
+        if let Some(details) = &rule.details {
             act = act.details(details);
         }
 
@@ -50,13 +48,10 @@ impl DiscordRpc {
         }
 
         Logger::log(&format!(
-            "[RPC] state={:?}, details={:?}, large_image={:?}, large_text={:?}, small_image={:?}, small_text={:?}",
+            "[RPC] class_title={:?}, state={:?}, details={:?}, large_image={:?}, large_text={:?}, small_image={:?}, small_text={:?}",
+            title,
             rule.state,
-            if rule.details_from_title.unwrap_or(false) {
-                Some(title)
-            } else {
-                rule.details.as_deref()
-            },
+            rule.details,
             rule.large_image,
             rule.large_text,
             rule.small_image,

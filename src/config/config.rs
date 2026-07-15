@@ -5,23 +5,43 @@ use serde::Deserialize;
 use std::collections::HashMap;
 use std::fs;
 
-#[derive(Deserialize)]
-pub struct Config {
-    pub default: RpcRule,
-    pub classes: HashMap<String, RpcRule>,
-    pub app_id: String,
-}
-
 #[derive(Deserialize, Clone)]
 pub struct RpcRule {
     pub state: Option<String>,
     pub details: Option<String>,
-    pub details_from_title: Option<bool>,
 
     pub large_image: Option<String>,
     pub large_text: Option<String>,
     pub small_image: Option<String>,
     pub small_text: Option<String>,
+}
+
+#[derive(Deserialize, Clone)]
+pub struct Config {
+    pub app_id: String,
+
+    /// Fallback Discord asset key used for the large image when a class has no
+    /// entry in `image_map`.
+    #[serde(default)]
+    pub default_large_image: Option<String>,
+
+    /// Optional Discord asset key per window class (e.g. "kitty" -> "kitty").
+    /// Anything not listed falls back to `default_large_image`.
+    #[serde(default)]
+    pub image_map: HashMap<String, String>,
+
+    /// Optional pretty display name per class (e.g. "org.mozilla.firefox" ->
+    /// "Firefox"). Unknown classes are auto-prettyfied from the raw class.
+    #[serde(default)]
+    pub name_map: HashMap<String, String>,
+
+    /// Use the live window title as the details field. Defaults to true.
+    #[serde(default = "default_true")]
+    pub details_from_title: bool,
+}
+
+fn default_true() -> bool {
+    true
 }
 
 impl Config {

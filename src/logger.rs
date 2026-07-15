@@ -1,10 +1,9 @@
 use crate::constants;
 use chrono::Local;
 use directories::ProjectDirs;
-use lazy_static::lazy_static;
 use std::fs::{self, OpenOptions};
 use std::io::Write;
-use std::sync::Mutex;
+use std::sync::{Mutex, OnceLock};
 
 pub struct Logger {
     file: Mutex<std::fs::File>,
@@ -40,16 +39,15 @@ impl Logger {
     }
 
     pub fn log(message: &str) {
-        lazy_static! {
-            static ref INSTANCE: Logger = Logger::init();
-        }
+        static INSTANCE: OnceLock<Logger> = OnceLock::new();
+        let instance = INSTANCE.get_or_init(Logger::init);
 
         let now = Local::now().format("%Y-%m-%d %H:%M:%S%.3f");
         let log_line = format!("{} - {}\n", now, message);
 
         print!("{}", log_line);
 
-        let mut file = INSTANCE.file.lock().unwrap();
+        let mut file = instance.file.lock().unwrap();
 
         file.write_all(log_line.as_bytes())
             .expect("Failed to write to log file");

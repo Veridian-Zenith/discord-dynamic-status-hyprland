@@ -1,21 +1,12 @@
 {
   "app_id": "1460605258072985705",
-  "default": {
-    "state": "Chilling",
-    "details": "At the workspace",
-    "large_text": "Arch Linux-zen x86_64",
-    "large_image": "arch",
-    "small_text": "Hyprland (Wayland)",
-    "small_image": "hyprland"
+  "default_large_image": "arch",
+  "details_from_title": true,
+  "image_map": {
+    "kitty": "kitty",
+    "org.mozilla.firefox": "firefox"
   },
-  "classes": {
-    "kitty": {
-      "state": "At kitty",
-      "details": "Writing command lines",
-      "large_text": "Arch Linux-zen x86_64",
-      "large_image": "arch",
-      "small_text": "Kitty with ZSH",
-      "small_image": "kitty"
-    }
+  "name_map": {
+    "org.mozilla.firefox": "Firefox"
   }
 }

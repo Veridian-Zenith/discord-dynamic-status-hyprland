@@ -23,8 +23,8 @@ fn main() {
     Logger::log("Connected to Discord successfully!");
 
     listen_active_window(|class, title| {
-        let rule = rules::resolve_rule(&config, &class);
+        let presence = rules::build_presence(&config, &class, &title);
 
-        rpc.update(rule, &title);
+        rpc.update(&presence, &title);
     });
 }
