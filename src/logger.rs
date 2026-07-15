@@ -17,7 +17,7 @@ impl Logger {
             constants::APP_NAME,
         )
         .expect("Failed to get application directory");
-        
+
         let log_dir = proj_dirs.data_dir().join("logs");
 
         if !log_dir.exists() {

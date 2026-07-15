@@ -1,16 +1,21 @@
 mod config;
+mod constants;
 mod discord;
 mod hyprland;
-mod rules;
 mod logger;
-mod constants;
+mod rules;
 
 use discord::rpc::DiscordRpc;
 use hyprland::events::listen_active_window;
 use logger::Logger;
 
 fn main() {
-    Logger::log("Starting application...");
+    Logger::log(&format!(
+        "Starting application v{} ({} / {})",
+        constants::VERSION,
+        constants::OS,
+        std::env::consts::ARCH
+    ));
 
     let config = config::Config::load();
 

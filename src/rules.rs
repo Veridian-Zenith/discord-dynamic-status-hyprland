@@ -204,7 +204,7 @@ fn has_domain_with_path(s: &str) -> bool {
     let after_dot = &s[dot_pos + 1..];
     // TLD must be at least 2 chars and followed by end-of-string, '/', '?', or '#'
     let tld_len = after_dot
-        .find(|c: char| c == '/' || c == '?' || c == '#')
+        .find(|c: char| ['/', '?', '#'].contains(&c))
         .unwrap_or(after_dot.len());
     tld_len >= 2
 }

@@ -1,3 +1,3 @@
-pub mod config;
+pub mod settings;
 
-pub use config::{Config, RpcRule};
+pub use settings::{Config, RpcRule};

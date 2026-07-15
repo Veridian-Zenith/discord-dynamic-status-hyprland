@@ -1,9 +1,9 @@
+use crate::logger::Logger;
 use std::{
     env,
     io::{BufRead, BufReader},
     os::unix::net::UnixStream,
 };
-use crate::logger::Logger;
 
 pub fn listen_active_window<F>(mut handler: F)
 where
@@ -19,14 +19,17 @@ where
 
     let reader = BufReader::new(stream);
 
-    for line in reader.lines().flatten() {
+    for line in reader.lines().map_while(Result::ok) {
         if let Some(data) = line.strip_prefix("activewindow>>") {
             let mut parts = data.splitn(2, ',');
 
             let class = parts.next().unwrap_or("").to_string();
             let title = parts.next().unwrap_or("").to_string();
 
-            Logger::log(&format!("Current class: {}, current title: {}", class, title));
+            Logger::log(&format!(
+                "Current class: {}, current title: {}",
+                class, title
+            ));
 
             handler(class, title);
         }

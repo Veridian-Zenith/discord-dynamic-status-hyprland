@@ -7,8 +7,11 @@ homepage = "https://github.com/mrkirill046/discord-dynamic-status-hyprland"
 license-file = "LICENSE"
 keywords = ["discord", "rpc", "hyprland", "wayland", "dynamic"]
 categories = ["command-line-utilities", "games", "network-programming"]
-version = "1.0.0"
+version = "1.1.0"
 edition = "2024"
+
+[package.metadata.release]
+pre-release-hook = ["cargo", "check"]
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }

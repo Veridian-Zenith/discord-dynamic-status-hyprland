@@ -1,6 +1,6 @@
 use crate::config::RpcRule;
 use crate::logger::Logger;
-use discord_rich_presence::{activity, DiscordIpc, DiscordIpcClient};
+use discord_rich_presence::{DiscordIpc, DiscordIpcClient, activity};
 
 pub struct DiscordRpc {
     client: DiscordIpcClient,
