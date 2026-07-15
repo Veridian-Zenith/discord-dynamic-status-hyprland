@@ -10,6 +10,10 @@ categories = ["command-line-utilities", "games", "network-programming"]
 version = "1.1.1"
 edition = "2024"
 
+[[bin]]
+name = "ddsh"
+path = "src/main.rs"
+
 [package.metadata.release]
 pre-release-hook = ["cargo", "check"]
 

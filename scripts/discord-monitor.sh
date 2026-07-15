@@ -6,7 +6,7 @@
 # status app accordingly.
 
 POLL_INTERVAL=3
-BINARY="discord-dynamic-status-hyprland"
+BINARY="ddsh"
 PID_FILE="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/drpc-hyprland.pid"
 
 cleanup() {
