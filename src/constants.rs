@@ -8,10 +8,35 @@ pub fn detect_os() -> String {
     #[cfg(target_os = "linux")]
     {
         if let Ok(content) = std::fs::read_to_string("/etc/os-release") {
+            let mut name = None;
+            let mut id = None;
+            let mut version_id = None;
+
             for line in content.lines() {
                 if let Some(value) = line.strip_prefix("PRETTY_NAME=") {
                     return value.trim_matches('"').to_string();
                 }
+                if let Some(value) = line.strip_prefix("NAME=") {
+                    name = Some(value.trim_matches('"').to_string());
+                }
+                if let Some(value) = line.strip_prefix("ID=") {
+                    id = Some(value.trim_matches('"').to_string());
+                }
+                if let Some(value) = line.strip_prefix("VERSION_ID=") {
+                    version_id = Some(value.trim_matches('"').to_string());
+                }
+            }
+
+            if let Some(n) = name {
+                return n;
+            }
+            if let Some(i) = id {
+                let mut result = i;
+                if let Some(v) = version_id {
+                    result.push(' ');
+                    result.push_str(&v);
+                }
+                return result;
             }
         }
         "Linux".to_string()
