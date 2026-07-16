@@ -81,7 +81,7 @@ dependencies = [
 
 [[package]]
 name = "discord-dynamic-status-hyprland"
-version = "1.2.1"
+version = "1.2.2"
 dependencies = [
  "chrono",
  "directories",
