@@ -23,7 +23,7 @@ fn main() {
         std::env::consts::ARCH
     ));
 
-    let config = Config::load(constants::COSMIC_APP_NAME);
+    let config = Config::load(constants::COSMIC_APP_NAME, include_str!("../../common/src/config/default-config-cosmic.json"));
 
     Logger::log("Config loaded successfully!");
 

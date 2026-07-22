@@ -45,7 +45,7 @@ fn default_true() -> bool {
 }
 
 impl Config {
-    pub fn load(app_name: &str) -> Self {
+    pub fn load(app_name: &str, default_config: &str) -> Self {
         let proj_dirs = ProjectDirs::from(constants::QUALIFIER, constants::ORGANIZATION, app_name)
             .expect("Failed to get application directory");
 
@@ -59,8 +59,6 @@ impl Config {
 
         if !config_path.exists() {
             Logger::log("Config not found, creating default config...");
-
-            let default_config = include_str!("default-config.json");
 
             fs::write(&config_path, default_config).expect("Failed to write default config");
         }

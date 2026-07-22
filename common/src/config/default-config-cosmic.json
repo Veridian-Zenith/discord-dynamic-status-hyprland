@@ -1,0 +1,12 @@
+{
+  "app_id": "1529346794427777125",
+  "default_large_image": "arch",
+  "details_from_title": true,
+  "image_map": {
+    "kitty": "kitty",
+    "org.mozilla.firefox": "firefox"
+  },
+  "name_map": {
+    "org.mozilla.firefox": "Firefox"
+  }
+}
