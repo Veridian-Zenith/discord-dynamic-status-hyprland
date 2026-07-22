@@ -5,7 +5,7 @@ PartOf=graphical-session.target
 
 [Service]
 Type=simple
-ExecStart=%h/.local/bin/discord-monitor.sh ddsh
+ExecStart=/usr/bin/discord-monitor-ddsh.sh ddsh
 Restart=on-failure
 RestartSec=5
 

@@ -6,7 +6,7 @@ use common::discord::rpc::DiscordRpc;
 use common::logger::Logger;
 use common::rules;
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
+use std::sync::mpsc;
 use wayland_client::{
     Connection, Proxy, QueueHandle,
     protocol::wl_display::WlDisplay,
@@ -47,26 +47,34 @@ fn main() {
     Logger::log("Requesting toplevel protocols, listening for window changes...");
 
     let config = Arc::new(config);
-    let rpc = Arc::new(Mutex::new(rpc));
+    let (tx, rx) = mpsc::channel::<(String, String)>();
 
-    let mut state = AppState::new(config, rpc);
+    let wayland_config = config.clone();
+    std::thread::Builder::new()
+        .name("wayland-events".into())
+        .spawn(move || {
+            let mut state = AppState::new(wayland_config, tx);
+            loop {
+                event_queue.blocking_dispatch(&mut state).unwrap();
+            }
+        })
+        .expect("Failed to spawn Wayland thread");
 
     loop {
-        event_queue.blocking_dispatch(&mut state).unwrap();
-
-        if let Some((class, title)) = state.toplevel_state.take_focus_change() {
+        if let Ok((class, title)) = rx.recv() {
             Logger::log(&format!(
                 "Current class: {}, current title: {}",
                 class, title
             ));
 
-            let presence = rules::build_presence(&state.config, &class, &title, "COSMIC");
+            let presence = rules::build_presence(&config, &class, &title, "COSMIC");
 
-            let mut rpc = state.rpc.lock().unwrap();
             rpc.update(&presence, &title);
         }
     }
 }
+
+use std::sync::Arc;
 
 pub struct ToplevelInfo {
     pub app_id: Option<String>,
@@ -76,7 +84,6 @@ pub struct ToplevelInfo {
 
 pub struct ToplevelState {
     pub toplevels: HashMap<u32, ToplevelInfo>,
-    pub ext_to_cosmic: HashMap<u32, u32>,
     active_id: Option<u32>,
     focus_change: Option<(String, String)>,
 }
@@ -85,14 +92,9 @@ impl ToplevelState {
     fn new() -> Self {
         Self {
             toplevels: HashMap::new(),
-            ext_to_cosmic: HashMap::new(),
             active_id: None,
             focus_change: None,
         }
-    }
-
-    pub fn take_focus_change(&mut self) -> Option<(String, String)> {
-        self.focus_change.take()
     }
 
     pub fn upsert_toplevel(&mut self, id: u32) -> &mut ToplevelInfo {
@@ -129,22 +131,34 @@ impl ToplevelState {
 
 pub struct AppState {
     pub toplevel_state: ToplevelState,
-    pub ext_toplevel_manager:
-        Option<wayland_protocols::ext::foreign_toplevel_list::v1::client::ext_foreign_toplevel_list_v1::ExtForeignToplevelListV1>,
-    pub cosmic_toplevel_manager: Option<cosmic_protocol::zcosmic_toplevel_info::zcosmic_toplevel_info_v1::ZcosmicToplevelInfoV1>,
+    pub cosmic_toplevel_manager: Option<
+        cosmic_protocol::zcosmic_toplevel_info::zcosmic_toplevel_info_v1::ZcosmicToplevelInfoV1,
+    >,
     pub config: Arc<Config>,
-    pub rpc: Arc<Mutex<DiscordRpc>>,
+    pub tx: mpsc::Sender<(String, String)>,
 }
 
 impl AppState {
-    fn new(config: Arc<Config>, rpc: Arc<Mutex<DiscordRpc>>) -> Self {
+    fn new(config: Arc<Config>, tx: mpsc::Sender<(String, String)>) -> Self {
         Self {
             toplevel_state: ToplevelState::new(),
-            ext_toplevel_manager: None,
             cosmic_toplevel_manager: None,
             config,
-            rpc,
+            tx,
         }
+    }
+
+    pub fn check_focus_and_notify(&mut self) {
+        self.toplevel_state.check_focus();
+        if let Some(change) = self.toplevel_state.take_focus_change() {
+            let _ = self.tx.send(change);
+        }
+    }
+}
+
+impl ToplevelState {
+    pub fn take_focus_change(&mut self) -> Option<(String, String)> {
+        self.focus_change.take()
     }
 }
 
@@ -174,26 +188,14 @@ impl wayland_client::Dispatch<WlRegistry, ()> for AppState {
             interface,
             version,
         } = event
+            && interface == "zcosmic_toplevel_info_v1"
         {
-            match interface.as_str() {
-                "ext_foreign_toplevel_list_v1" => {
-                    Logger::log(&format!(
-                        "Found ext_foreign_toplevel_list_v1 (name={}, version={})",
-                        name, version
-                    ));
-                    let proxy = registry.bind(name, version.min(1), qhandle, ());
-                    state.ext_toplevel_manager = Some(proxy);
-                }
-                "zcosmic_toplevel_info_v1" => {
-                    Logger::log(&format!(
-                        "Found zcosmic_toplevel_info_v1 (name={}, version={})",
-                        name, version
-                    ));
-                    let proxy = registry.bind(name, version.min(2), qhandle, ());
-                    state.cosmic_toplevel_manager = Some(proxy);
-                }
-                _ => {}
-            }
+            Logger::log(&format!(
+                "Found zcosmic_toplevel_info_v1 (name={}, version={})",
+                name, version
+            ));
+            let proxy = registry.bind(name, version.min(1), qhandle, ());
+            state.cosmic_toplevel_manager = Some(proxy);
         }
     }
 }

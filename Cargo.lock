@@ -92,7 +92,6 @@ dependencies = [
  "common",
  "cosmic-protocol",
  "wayland-client",
- "wayland-protocols",
 ]
 
 [[package]]

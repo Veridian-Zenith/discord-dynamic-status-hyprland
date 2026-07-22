@@ -50,15 +50,15 @@ build_binary() {
 install_hyprland() {
     build_binary ddsh
 
-    cp scripts/discord-monitor.sh "$BINDIR/discord-monitor.sh"
-    chmod +x "$BINDIR/discord-monitor.sh"
+    cp scripts/discord-monitor.sh "$BINDIR/discord-monitor-ddsh.sh"
+    chmod +x "$BINDIR/discord-monitor-ddsh.sh"
 
-    cp scripts/discord-monitor-hyprland.service "$SERVICEDIR/discord-monitor.service"
+    sed "s|/usr/bin/|${BINDIR}/|g" scripts/discord-monitor-hyprland.service > "$SERVICEDIR/discord-monitor.service"
 
     echo ""
     echo "Installed (Hyprland):"
     echo "  $BINDIR/ddsh"
-    echo "  $BINDIR/discord-monitor.sh"
+    echo "  $BINDIR/discord-monitor-ddsh.sh"
     echo "  $SERVICEDIR/discord-monitor.service"
     echo ""
     echo "To enable (starts automatically on login):"
@@ -72,10 +72,10 @@ install_hyprland() {
 install_cosmic() {
     build_binary ddsc
 
-    cp scripts/discord-monitor.sh "$BINDIR/discord-monitor.sh"
-    chmod +x "$BINDIR/discord-monitor.sh"
+    cp scripts/discord-monitor.sh "$BINDIR/discord-monitor-ddsc.sh"
+    chmod +x "$BINDIR/discord-monitor-ddsc.sh"
 
-    cp scripts/discord-monitor-cosmic.service "$SERVICEDIR/discord-monitor.service"
+    sed "s|/usr/bin/|${BINDIR}/|g" scripts/discord-monitor-cosmic.service > "$SERVICEDIR/discord-monitor.service"
 
     # Install .desktop file for COSMIC autostart
     mkdir -p "$AUTOSTARTDIR"
@@ -84,7 +84,7 @@ install_cosmic() {
     echo ""
     echo "Installed (COSMIC):"
     echo "  $BINDIR/ddsc"
-    echo "  $BINDIR/discord-monitor.sh"
+    echo "  $BINDIR/discord-monitor-ddsc.sh"
     echo "  $SERVICEDIR/discord-monitor.service"
     echo "  $AUTOSTARTDIR/ddsc.desktop"
     echo ""
