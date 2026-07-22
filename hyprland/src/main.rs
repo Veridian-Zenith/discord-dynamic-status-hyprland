@@ -1,11 +1,40 @@
-use crate::logger::Logger;
-use std::{
-    env,
-    io::{BufRead, BufReader},
-    os::unix::net::UnixStream,
-};
+use common::config::Config;
+use common::constants;
+use common::discord::rpc::DiscordRpc;
+use common::logger::Logger;
+use common::rules;
+use std::env;
+use std::io::{BufRead, BufReader};
+use std::os::unix::net::UnixStream;
 
-pub fn listen_active_window<F>(mut handler: F)
+fn main() {
+    Logger::init_logger(constants::HYPRLAND_APP_NAME);
+
+    Logger::log(&format!(
+        "Starting application v{} ({} / {})",
+        constants::VERSION,
+        constants::detect_os(),
+        std::env::consts::ARCH
+    ));
+
+    let config = Config::load(constants::HYPRLAND_APP_NAME);
+
+    Logger::log("Config loaded successfully!");
+
+    let mut rpc = DiscordRpc::new(&config.app_id);
+
+    rpc.connect();
+
+    Logger::log("Connected to Discord successfully!");
+
+    listen_active_window(|class, title| {
+        let presence = rules::build_presence(&config, &class, &title, "Hyprland");
+
+        rpc.update(&presence, &title);
+    });
+}
+
+fn listen_active_window<F>(mut handler: F)
 where
     F: FnMut(String, String),
 {

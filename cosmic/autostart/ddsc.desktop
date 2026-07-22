@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Discord Dynamic Status (COSMIC)
+Comment=Dynamic Discord Rich Presence based on active COSMIC windows
+Exec=ddsc
+Terminal=false
+X-GNOME-Autostart-enabled=true
+X-COSMIC-Autostart-enabled=true

@@ -45,13 +45,9 @@ fn default_true() -> bool {
 }
 
 impl Config {
-    pub fn load() -> Self {
-        let proj_dirs = ProjectDirs::from(
-            constants::QUALIFIER,
-            constants::ORGANIZATION,
-            constants::APP_NAME,
-        )
-        .expect("Failed to get application directory");
+    pub fn load(app_name: &str) -> Self {
+        let proj_dirs = ProjectDirs::from(constants::QUALIFIER, constants::ORGANIZATION, app_name)
+            .expect("Failed to get application directory");
 
         let data_dir = proj_dirs.data_dir();
 

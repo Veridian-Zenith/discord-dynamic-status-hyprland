@@ -1,13 +1,17 @@
 #!/bin/sh
-# discord-monitor.sh — keep discord-dynamic-status-hyprland alive while Discord runs.
+# discord-monitor.sh — keep discord-dynamic-status alive while Discord runs.
+#
+# Usage: discord-monitor.sh <binary-name>
+#   e.g. discord-monitor.sh ddsh    (for Hyprland)
+#        discord-monitor.sh ddsc    (for COSMIC)
 #
 # Designed to be run as a systemd user service (or exec-once).
 # Polls for Discord's process every POLL_INTERVAL seconds and starts/stops the
 # status app accordingly.
 
+BINARY="${1:-ddsh}"
 POLL_INTERVAL=3
-BINARY="ddsh"
-PID_FILE="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/drpc-hyprland.pid"
+PID_FILE="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/drpc-${BINARY}.pid"
 
 cleanup() {
     [ -f "$PID_FILE" ] && kill "$(cat "$PID_FILE")" 2>/dev/null && rm -f "$PID_FILE"

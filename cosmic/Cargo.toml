@@ -1,0 +1,20 @@
+[package]
+name = "ddsc"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license-file.workspace = true
+description = "Dynamic Discord Rich Presence based on active COSMIC windows"
+
+[[bin]]
+name = "ddsc"
+path = "src/main.rs"
+
+[package.metadata.release]
+pre-release-hook = ["cargo", "check"]
+
+[dependencies]
+common = { path = "../common" }
+cosmic-protocol = { path = "../cosmic-protocol" }
+wayland-client = "0.31"
+wayland-protocols = { version = "0.31", features = ["client", "staging"] }

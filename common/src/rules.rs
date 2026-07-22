@@ -21,7 +21,7 @@ fn class_cache() -> &'static Mutex<HashMap<String, ClassInfo>> {
 
 /// Build the rich-presence payload dynamically from the active window instead
 /// of looking it up in a static per-class table.
-pub fn build_presence(config: &Config, class: &str, title: &str) -> RpcRule {
+pub fn build_presence(config: &Config, class: &str, title: &str, desktop: &str) -> RpcRule {
     let info = resolve_class(config, class);
 
     let details = if config.details_from_title {
@@ -35,8 +35,8 @@ pub fn build_presence(config: &Config, class: &str, title: &str) -> RpcRule {
         details,
         large_image: info.large_image,
         large_text: Some(info.name),
-        small_image: Some("hyprland".to_string()),
-        small_text: Some("Hyprland".to_string()),
+        small_image: Some(desktop.to_lowercase()),
+        small_text: Some(desktop.to_string()),
     }
 }
 

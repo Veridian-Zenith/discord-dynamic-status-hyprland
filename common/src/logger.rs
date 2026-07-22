@@ -10,13 +10,9 @@ pub struct Logger {
 }
 
 impl Logger {
-    fn init() -> Self {
-        let proj_dirs = ProjectDirs::from(
-            constants::QUALIFIER,
-            constants::ORGANIZATION,
-            constants::APP_NAME,
-        )
-        .expect("Failed to get application directory");
+    fn init(app_name: &str) -> Self {
+        let proj_dirs = ProjectDirs::from(constants::QUALIFIER, constants::ORGANIZATION, app_name)
+            .expect("Failed to get application directory");
 
         let log_dir = proj_dirs.data_dir().join("logs");
 
@@ -38,9 +34,15 @@ impl Logger {
         }
     }
 
+    pub fn init_logger(app_name: &str) {
+        let app_name = app_name.to_string();
+        static INSTANCE: OnceLock<Logger> = OnceLock::new();
+        INSTANCE.get_or_init(|| Logger::init(&app_name));
+    }
+
     pub fn log(message: &str) {
         static INSTANCE: OnceLock<Logger> = OnceLock::new();
-        let instance = INSTANCE.get_or_init(Logger::init);
+        let instance = INSTANCE.get_or_init(|| Logger::init("Dynamic-DRPC"));
 
         let now = Local::now().format("%Y-%m-%d %H:%M:%S%.3f");
         let log_line = format!("{} - {}\n", now, message);

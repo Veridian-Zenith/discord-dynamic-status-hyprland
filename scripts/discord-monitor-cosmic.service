@@ -1,11 +1,11 @@
 [Unit]
-Description=Discord Dynamic Status for Hyprland
+Description=Discord Dynamic Status for COSMIC
 After=graphical-session.target
 PartOf=graphical-session.target
 
 [Service]
 Type=simple
-ExecStart=%h/.local/bin/discord-monitor.sh
+ExecStart=%h/.local/bin/discord-monitor.sh ddsc
 Restart=on-failure
 RestartSec=5
 
