@@ -1,5 +1,5 @@
 [workspace]
-members = ["common", "hyprland", "cosmic", "cosmic-protocol"]
+members = ["common", "hyprland", "cosmic"]
 resolver = "3"
 
 [workspace.package]

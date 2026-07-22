@@ -15,5 +15,5 @@ pre-release-hook = ["cargo", "check"]
 
 [dependencies]
 common = { path = "../common" }
-cosmic-protocol = { path = "../cosmic-protocol" }
+cosmic-protocols = { version = "0.2.0", default-features = false, features = ["client"] }
 wayland-client = "0.31"

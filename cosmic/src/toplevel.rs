@@ -1,9 +1,9 @@
 use crate::AppState;
 use common::logger::Logger;
-use cosmic_protocol::zcosmic_toplevel_info::zcosmic_toplevel_handle_v1::{
+use cosmic_protocols::toplevel_info::v1::client::zcosmic_toplevel_handle_v1::{
     self, ZcosmicToplevelHandleV1,
 };
-use cosmic_protocol::zcosmic_toplevel_info::zcosmic_toplevel_info_v1::{
+use cosmic_protocols::toplevel_info::v1::client::zcosmic_toplevel_info_v1::{
     self, ZcosmicToplevelInfoV1,
 };
 use wayland_client::{Dispatch, Proxy, QueueHandle, event_created_child};

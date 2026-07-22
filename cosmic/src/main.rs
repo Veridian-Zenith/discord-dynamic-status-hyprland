@@ -55,7 +55,10 @@ fn main() {
         .spawn(move || {
             let mut state = AppState::new(wayland_config, tx);
             loop {
-                event_queue.blocking_dispatch(&mut state).unwrap();
+                if let Err(e) = event_queue.blocking_dispatch(&mut state) {
+                    Logger::log(&format!("Error in Wayland event dispatch: {:?}", e));
+                    break;
+                }
             }
         })
         .expect("Failed to spawn Wayland thread");
@@ -132,7 +135,7 @@ impl ToplevelState {
 pub struct AppState {
     pub toplevel_state: ToplevelState,
     pub cosmic_toplevel_manager: Option<
-        cosmic_protocol::zcosmic_toplevel_info::zcosmic_toplevel_info_v1::ZcosmicToplevelInfoV1,
+        cosmic_protocols::toplevel_info::v1::client::zcosmic_toplevel_info_v1::ZcosmicToplevelInfoV1,
     >,
     pub config: Arc<Config>,
     pub tx: mpsc::Sender<(String, String)>,
