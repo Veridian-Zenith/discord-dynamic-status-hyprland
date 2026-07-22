@@ -17,7 +17,10 @@ fn main() {
         std::env::consts::ARCH
     ));
 
-    let config = Config::load(constants::HYPRLAND_APP_NAME, include_str!("../../common/src/config/default-config.json"));
+    let config = Config::load(
+        constants::HYPRLAND_APP_NAME,
+        include_str!("../../common/src/config/default-config.json"),
+    );
 
     Logger::log("Config loaded successfully!");
 
