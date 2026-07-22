@@ -1,6 +1,4 @@
-pre-release-replacements = [
-  {file = "Cargo.toml", search = '^version = ".*"', replace = 'version = "{{version}}"'},
-]
+pre-release-replacements = []
 tag = true
 publish = false
 push-remote = "origin"
