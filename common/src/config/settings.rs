@@ -47,15 +47,15 @@ fn default_true() -> bool {
 impl Config {
     pub fn load(app_name: &str, default_config: &str) -> Self {
         let proj_dirs = ProjectDirs::from(constants::QUALIFIER, constants::ORGANIZATION, app_name)
-            .expect("Failed to get application directory");
+            .expect("Failed to determine application directories");
 
-        let data_dir = proj_dirs.data_dir();
+        let config_dir = proj_dirs.config_dir();
 
-        if !data_dir.exists() {
-            fs::create_dir_all(data_dir).expect("Failed to create data dir");
+        if !config_dir.exists() {
+            fs::create_dir_all(config_dir).expect("Failed to create config directory");
         }
 
-        let config_path = data_dir.join("config.json");
+        let config_path = config_dir.join("config.json");
 
         if !config_path.exists() {
             Logger::log("Config not found, creating default config...");

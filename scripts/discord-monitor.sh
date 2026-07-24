@@ -29,7 +29,7 @@ app_running() {
 }
 
 start_app() {
-    $BINARY &
+    "$BINARY" &
     echo $! > "$PID_FILE"
 }
 

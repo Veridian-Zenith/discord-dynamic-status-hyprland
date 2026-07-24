@@ -1,6 +1,6 @@
 # `DDS` 
 
-![Rust](https://img.shields.io/badge/Rust-1.70+-orange?style=for-the-badge\&logo=rust)
+![Rust](https://img.shields.io/badge/Rust-1.85+-orange?style=for-the-badge\&logo=rust)
 ![License MIT](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
 ![Platform: Linux](https://img.shields.io/badge/Platform-Linux-blue?style=for-the-badge) 
 ![WM](https://img.shields.io/badge/WM-Hyprland-purple?style=for-the-badge)

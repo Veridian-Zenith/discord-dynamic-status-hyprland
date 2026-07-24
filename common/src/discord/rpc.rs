@@ -13,11 +13,13 @@ impl DiscordRpc {
         }
     }
 
-    pub fn connect(&mut self) {
-        self.client.connect().unwrap();
+    pub fn connect(&mut self) -> Result<(), String> {
+        self.client
+            .connect()
+            .map_err(|e| format!("Failed to connect to Discord: {}", e))
     }
 
-    pub fn update(&mut self, rule: &RpcRule, title: &str) {
+    fn build_activity(rule: &RpcRule) -> activity::Activity<'_> {
         let mut act = activity::Activity::new();
 
         if let Some(state) = &rule.state {
@@ -47,6 +49,10 @@ impl DiscordRpc {
             act = act.assets(assets);
         }
 
+        act
+    }
+
+    pub fn update(&mut self, rule: &RpcRule, title: &str) {
         Logger::log(&format!(
             "[RPC] class_title={:?}, state={:?}, details={:?}, large_image={:?}, large_text={:?}, small_image={:?}, small_text={:?}",
             title,
@@ -58,6 +64,21 @@ impl DiscordRpc {
             rule.small_text
         ));
 
-        let _ = self.client.set_activity(act);
+        let act = Self::build_activity(rule);
+
+        if let Err(e) = self.client.set_activity(act) {
+            Logger::log(&format!(
+                "[RPC] Failed to set activity: {}. Attempting reconnect...",
+                e
+            ));
+            if let Err(re) = self.connect() {
+                Logger::log(&format!("[RPC] Reconnect failed: {}", re));
+                return;
+            }
+            let act = Self::build_activity(rule);
+            if let Err(e2) = self.client.set_activity(act) {
+                Logger::log(&format!("[RPC] Retry also failed: {}", e2));
+            }
+        }
     }
 }

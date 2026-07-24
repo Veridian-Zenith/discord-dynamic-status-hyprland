@@ -53,20 +53,20 @@ install_hyprland() {
     cp scripts/discord-monitor.sh "$BINDIR/discord-monitor-ddsh.sh"
     chmod +x "$BINDIR/discord-monitor-ddsh.sh"
 
-    sed "s|/usr/bin/|${BINDIR}/|g" scripts/discord-monitor-hyprland.service > "$SERVICEDIR/discord-monitor.service"
+    sed "s|/usr/bin/|${BINDIR}/|g" scripts/discord-monitor-hyprland.service > "$SERVICEDIR/discord-monitor-hyprland.service"
 
     echo ""
     echo "Installed (Hyprland):"
     echo "  $BINDIR/ddsh"
     echo "  $BINDIR/discord-monitor-ddsh.sh"
-    echo "  $SERVICEDIR/discord-monitor.service"
+    echo "  $SERVICEDIR/discord-monitor-hyprland.service"
     echo ""
     echo "To enable (starts automatically on login):"
     echo "  systemctl --user daemon-reload"
-    echo "  systemctl --user enable --now discord-monitor.service"
+    echo "  systemctl --user enable --now discord-monitor-hyprland.service"
     echo ""
     echo "To start immediately:"
-    echo "  systemctl --user start discord-monitor.service"
+    echo "  systemctl --user start discord-monitor-hyprland.service"
 }
 
 install_cosmic() {
@@ -75,7 +75,7 @@ install_cosmic() {
     cp scripts/discord-monitor.sh "$BINDIR/discord-monitor-ddsc.sh"
     chmod +x "$BINDIR/discord-monitor-ddsc.sh"
 
-    sed "s|/usr/bin/|${BINDIR}/|g" scripts/discord-monitor-cosmic.service > "$SERVICEDIR/discord-monitor.service"
+    sed "s|/usr/bin/|${BINDIR}/|g" scripts/discord-monitor-cosmic.service > "$SERVICEDIR/discord-monitor-cosmic.service"
 
     # Install .desktop file for COSMIC autostart
     mkdir -p "$AUTOSTARTDIR"
@@ -85,17 +85,17 @@ install_cosmic() {
     echo "Installed (COSMIC):"
     echo "  $BINDIR/ddsc"
     echo "  $BINDIR/discord-monitor-ddsc.sh"
-    echo "  $SERVICEDIR/discord-monitor.service"
+    echo "  $SERVICEDIR/discord-monitor-cosmic.service"
     echo "  $AUTOSTARTDIR/ddsc.desktop"
     echo ""
     echo "To enable via systemd (starts automatically on login):"
     echo "  systemctl --user daemon-reload"
-    echo "  systemctl --user enable --now discord-monitor.service"
+    echo "  systemctl --user enable --now discord-monitor-cosmic.service"
     echo ""
     echo "Or enable via COSMIC autostart settings (ddsc.desktop is installed)."
     echo ""
     echo "To start immediately:"
-    echo "  systemctl --user start discord-monitor.service"
+    echo "  systemctl --user start discord-monitor-cosmic.service"
 }
 
 case "$DESKTOP" in

@@ -6,6 +6,7 @@ use common::rules;
 use std::env;
 use std::io::{BufRead, BufReader};
 use std::os::unix::net::UnixStream;
+use std::process;
 
 fn main() {
     Logger::init_logger(constants::HYPRLAND_APP_NAME);
@@ -26,7 +27,10 @@ fn main() {
 
     let mut rpc = DiscordRpc::new(&config.app_id);
 
-    rpc.connect();
+    if let Err(e) = rpc.connect() {
+        Logger::log(&format!("Fatal: {}", e));
+        process::exit(1);
+    }
 
     Logger::log("Connected to Discord successfully!");
 
@@ -41,13 +45,26 @@ fn listen_active_window<F>(mut handler: F)
 where
     F: FnMut(String, String),
 {
-    let runtime = env::var("XDG_RUNTIME_DIR").expect("XDG_RUNTIME_DIR not set");
-    let sig = env::var("HYPRLAND_INSTANCE_SIGNATURE").expect("HYPRLAND_INSTANCE_SIGNATURE not set");
+    let runtime = env::var("XDG_RUNTIME_DIR").unwrap_or_else(|_| {
+        let fallback = format!("/run/user/{}", std::process::id());
+        Logger::log("XDG_RUNTIME_DIR not set, using fallback");
+        fallback
+    });
+    let sig = env::var("HYPRLAND_INSTANCE_SIGNATURE").unwrap_or_else(|e| {
+        Logger::log(&format!("Fatal: HYPRLAND_INSTANCE_SIGNATURE not set: {}", e));
+        process::exit(1);
+    });
 
     Logger::log(&format!("Runtime: {}, Signature: {}", runtime, sig));
 
     let path = format!("{runtime}/hypr/{sig}/.socket2.sock");
-    let stream = UnixStream::connect(path).expect("Failed to connect to Hyprland socket");
+    let stream = match UnixStream::connect(&path) {
+        Ok(s) => s,
+        Err(e) => {
+            Logger::log(&format!("Fatal: Failed to connect to Hyprland socket at {}: {}", path, e));
+            process::exit(1);
+        }
+    };
 
     let reader = BufReader::new(stream);
 

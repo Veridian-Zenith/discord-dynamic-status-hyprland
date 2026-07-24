@@ -6,7 +6,8 @@ use common::discord::rpc::DiscordRpc;
 use common::logger::Logger;
 use common::rules;
 use std::collections::HashMap;
-use std::sync::mpsc;
+use std::process;
+use std::sync::{Arc, mpsc};
 use wayland_client::{
     Connection, Proxy, QueueHandle,
     protocol::wl_display::WlDisplay,
@@ -32,11 +33,20 @@ fn main() {
 
     let mut rpc = DiscordRpc::new(&config.app_id);
 
-    rpc.connect();
+    if let Err(e) = rpc.connect() {
+        Logger::log(&format!("Fatal: {}", e));
+        process::exit(1);
+    }
 
     Logger::log("Connected to Discord successfully!");
 
-    let conn = Connection::connect_to_env().expect("Failed to connect to Wayland display");
+    let conn = match Connection::connect_to_env() {
+        Ok(c) => c,
+        Err(e) => {
+            Logger::log(&format!("Fatal: Failed to connect to Wayland display: {:?}", e));
+            process::exit(1);
+        }
+    };
 
     Logger::log("Connected to Wayland display");
 
@@ -79,8 +89,6 @@ fn main() {
         }
     }
 }
-
-use std::sync::Arc;
 
 pub struct ToplevelInfo {
     pub app_id: Option<String>,
@@ -133,6 +141,10 @@ impl ToplevelState {
             }
         }
     }
+
+    pub fn take_focus_change(&mut self) -> Option<(String, String)> {
+        self.focus_change.take()
+    }
 }
 
 pub struct AppState {
@@ -159,12 +171,6 @@ impl AppState {
         if let Some(change) = self.toplevel_state.take_focus_change() {
             let _ = self.tx.send(change);
         }
-    }
-}
-
-impl ToplevelState {
-    pub fn take_focus_change(&mut self) -> Option<(String, String)> {
-        self.focus_change.take()
     }
 }
 
