@@ -1,4 +1,4 @@
-# `discord-dynamic-status-hyprland` 
+# `DDS` 
 
 ![Rust](https://img.shields.io/badge/Rust-1.70+-orange?style=for-the-badge\&logo=rust)
 ![License MIT](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
@@ -25,8 +25,8 @@ Automatically updates your Discord status based on the active window.
 ### Quick install (recommended)
 
 ```bash
-git clone https://github.com/Veridian-Zenith/discord-dynamic-status-hyprland.git
-cd discord-dynamic-status-hyprland
+git clone https://github.com/Veridian-Zenith/DDS.git
+cd DDS
 ./scripts/install.sh --release
 systemctl --user daemon-reload
 systemctl --user enable --now discord-monitor.service
