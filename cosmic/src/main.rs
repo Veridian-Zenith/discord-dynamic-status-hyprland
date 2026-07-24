@@ -43,7 +43,10 @@ fn main() {
     let conn = match Connection::connect_to_env() {
         Ok(c) => c,
         Err(e) => {
-            Logger::log(&format!("Fatal: Failed to connect to Wayland display: {:?}", e));
+            Logger::log(&format!(
+                "Fatal: Failed to connect to Wayland display: {:?}",
+                e
+            ));
             process::exit(1);
         }
     };

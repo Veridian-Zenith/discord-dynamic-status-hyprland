@@ -51,7 +51,10 @@ where
         fallback
     });
     let sig = env::var("HYPRLAND_INSTANCE_SIGNATURE").unwrap_or_else(|e| {
-        Logger::log(&format!("Fatal: HYPRLAND_INSTANCE_SIGNATURE not set: {}", e));
+        Logger::log(&format!(
+            "Fatal: HYPRLAND_INSTANCE_SIGNATURE not set: {}",
+            e
+        ));
         process::exit(1);
     });
 
@@ -61,7 +64,10 @@ where
     let stream = match UnixStream::connect(&path) {
         Ok(s) => s,
         Err(e) => {
-            Logger::log(&format!("Fatal: Failed to connect to Hyprland socket at {}: {}", path, e));
+            Logger::log(&format!(
+                "Fatal: Failed to connect to Hyprland socket at {}: {}",
+                path, e
+            ));
             process::exit(1);
         }
     };
